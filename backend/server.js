@@ -1,11 +1,13 @@
 // server.js
 
-require('dotenv').config(); // Load .env file
-const express = require('express');
+require("dotenv").config(); // Load .env file
+const express = require("express");
 const app = express();
+const cors = require("cors");
+app.use(cors());
 
 // Import supabase-js
-const { createClient } = require('@supabase/supabase-js');
+const { createClient } = require("@supabase/supabase-js");
 
 // Create Supabase client
 const supabase = createClient(
@@ -20,16 +22,16 @@ app.locals.supabase = supabase;
 app.use(express.json());
 
 // Import and mount the auth routes
-const authRoutes = require('./routes/auth');
-app.use('/auth', authRoutes);
+const authRoutes = require("./routes/auth");
+app.use("/auth", authRoutes);
 
-const blockchainRoutes = require('./routes/blockchain');
-app.use('/blockchain', blockchainRoutes, authenticateSupabaseToken);
+// const blockchainRoutes = require('./routes/blockchain');
+// app.use('/blockchain', blockchainRoutes, authenticateSupabaseToken);
 
 
 // Example root route
-app.get('/', (req, res) => {
-  res.send('Hello World from Express + Supabase!');
+app.get("/", (req, res) => {
+  res.send("Hello World from Express + Supabase!");
 });
 
 // Start server

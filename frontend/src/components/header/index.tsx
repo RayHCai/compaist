@@ -1,4 +1,9 @@
+import { useContext } from 'react';
+import { UserContext } from '@/contexts/userContext';
+
 export default function Header() {
+    const { user } = useContext(UserContext);
+
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-[#F2F1EA]/80 backdrop-blur-lg border-b-2 border-[#E8E8E8] h-[66px] flex items-center">
             <div className="container mx-auto px-4 flex justify-between items-center">
@@ -17,10 +22,10 @@ export default function Header() {
                     </a>
                     
                     <a
-                        href="/login"
+                        href={  user ? '/dashboard' : '/login' }
                         className="text-[13px] font-medium bg-black text-white px-[13px] pt-[8px] pb-[8px] rounded-[7px] hover:bg-gray-800 transition-colors font-instrument-sans"
                     >
-                        Login
+                        { user ? 'Dashboard' : 'Login' }
                     </a>
                 </div>
             </div>
