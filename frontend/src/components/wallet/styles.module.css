@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.headerContainer p {
+    opacity: 0.5;
+}
+
+.container h1 {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.cardsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.cardContainer {
+    padding: 20px;
+    border-radius: 5px;
+    background: black;
+    border: 1px solid rgba(0, 0, 0, 0.444);
+    box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.212);
+    color: white;
+}
+
+.cardContainer h2 {
+    color: lightgrey;
+}
+
+.cardContainer h1 {
+    font-weight: 600;
+    font-size: 30px;
+}

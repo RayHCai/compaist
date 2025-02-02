@@ -1,0 +1,52 @@
+.returnHomeButton {
+    position: absolute;
+    border-radius: 5px;
+    z-index: 99;
+    background: rgba(0, 0, 0, 0.818);
+    color: #f3f1ea;
+    padding: 10px 20px;
+    cursor: pointer;
+    bottom: 0;
+    margin: 40px 10px;
+    transition: 0.3s;
+}
+
+.returnHomeButton:hover {
+    background: black;
+}
+
+.modalContent {
+    width: 100%;
+    gap: 30px;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-self: center;
+}
+
+.poiModalContent {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.poiModalContent p {
+    opacity: 0.4;
+}
+
+.modalContent h2 {
+    text-align: left;
+}
+
+.closeButton {
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.875);
+    padding: 4px 40px;
+    transition: 0.3s;
+}
+
+.closeButton:hover {
+    background: black;
+}

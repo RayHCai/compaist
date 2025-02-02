@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    width: 100%;
+}
+
+.sidebarContainer {
+    width: fit-content;
+}
+
+.mainContentContainer {
+    width: 100%;
+    padding: 10px;
+    background: #f3f1ea;
+}

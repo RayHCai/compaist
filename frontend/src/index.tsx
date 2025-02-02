@@ -23,13 +23,17 @@ function App() {
 
                     <Route path="/login" Component={ Login } />
 
-                    <Route path="/map" Component={PrivateRoute}>
-                        <Route Component={ MapContainer } />
+                    <Route path="/map" Component={ MapContainer } />
+                    {/* <Route path="/map" Component={PrivateRoute}>
+                    </Route> */}
+
+                    <Route path="/dashboard">
+                        <Route path="/dashboard" element={ <Dashboard page="feed" /> } />
+                        <Route path="/dashboard/pins" element={ <Dashboard page="pins" /> } />
                     </Route>
 
-                    <Route path="/dashboard" Component={PrivateRoute}>
-                        <Route Component={ Dashboard } />
-                    </Route>
+                    {/* <Route path="/dashboard" Component={PrivateRoute}>
+                    </Route> */}
                 </Routes>
             </BrowserRouter>
         </UserContextWrapper>
