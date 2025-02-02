@@ -11,10 +11,14 @@ const app = express();
 app.use(cors());                         // Enable CORS
 app.use(express.json());                 // Middleware to parse JSON
 
-require("dotenv").config();
-const express = require("express");
-const app = express();
 const axios = require("axios");
+
+const mapRoutes = require("./routes/map");
+const authRoutes = require("./routes/auth");
+
+app.use(express.json());
+// const axios = require("axios");
+
 const cors = require("cors");
 const { createClient } = require("@supabase/supabase-js");
 
@@ -65,6 +69,7 @@ const authRoutes = require("./routes/auth");
 const blockchainRoutes = require("./routes/blockchain");
 app.use("/blockchain", blockchainRoutes);
 
+app.use("/map", mapRoutes);
 app.use("/auth", authRoutes);
 
 
