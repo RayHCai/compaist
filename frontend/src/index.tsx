@@ -25,6 +25,7 @@ function App() {
 
                     <Route path="/map" Component={PrivateRoute}>
                         <Route path="/map" Component={ MapContainer } />
+                        <Route path="/map/:lat/:lng" Component={ MapContainer } />
                     </Route>
 
                     <Route path="/dashboard" Component={PrivateRoute}>

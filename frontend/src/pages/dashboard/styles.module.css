@@ -12,3 +12,9 @@
     padding: 10px;
     background: #f3f1ea;
 }
+
+.noDeposists {
+    text-align: center;
+    font-size: 20px;
+    font-style: italic;
+}

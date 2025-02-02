@@ -1,4 +1,3 @@
-
 // server.js
 
 const axios = require("axios");          // For making HTTP requests to Python service
@@ -11,21 +10,7 @@ const app = express();
 app.use(cors());                         // Enable CORS
 app.use(express.json());                 // Middleware to parse JSON
 
-const axios = require("axios");
-
 const mapRoutes = require("./routes/map");
-const authRoutes = require("./routes/auth");
-
-app.use(express.json());
-// const axios = require("axios");
-
-const cors = require("cors");
-const { createClient } = require("@supabase/supabase-js");
-
-
-// ✅ Middleware
-app.use(cors());                         // Enable CORS
-app.use(express.json());                 // Middleware to parse JSON
 
 
 // ✅ Initialize Supabase
@@ -65,12 +50,10 @@ app.post("/api/qr-code", async (req, res) => {
 app.locals.supabase = supabase;
 
 // ✅ Import and Mount Routes
-const authRoutes = require("./routes/auth");
 const blockchainRoutes = require("./routes/blockchain");
 app.use("/blockchain", blockchainRoutes);
 
 app.use("/map", mapRoutes);
-app.use("/auth", authRoutes);
 
 
 // ✅ Route to Handle QR Code Scanning
