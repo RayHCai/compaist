@@ -11,7 +11,11 @@ function Card(props: PropsWithChildren & { title: string; stat: string }) {
     );
 }
 
-export default function Wallet() {
+type WalletProps = {
+    balance: number;
+};
+
+export default function Wallet(props: WalletProps) {
     return (
         <div className={ classes.container }>
             <div className={ classes.headerContainer }>
@@ -20,9 +24,9 @@ export default function Wallet() {
             </div>
 
             <div className={ classes.cardsContainer }>
-                <Card title="Your Balance" stat="$33" />
-                <Card title="Your Deposits" stat="33" />
-                <Card title="Pounds Donated" stat="33 lbs" />
+                <Card title="Your Balance" stat={`$${props.balance}`} />
+                {/* <Card title="Your Deposits" stat="33" />
+                <Card title="Pounds Donated" stat="33 lbs" /> */}
             </div>
 
         </div>

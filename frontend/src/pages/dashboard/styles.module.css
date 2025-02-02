@@ -18,3 +18,12 @@
     font-size: 20px;
     font-style: italic;
 }
+
+.qrButton {
+    z-index: 999;
+    background: white;
+    color: black;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
