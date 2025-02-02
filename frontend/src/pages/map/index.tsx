@@ -11,7 +11,7 @@ import {
 
 import Modal from '@/components/modal';
 import { distanceBetweenPoints } from '@googlemaps/markerclusterer';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import { BACKEND_URL } from '@/settings';
 import { UserContext } from '@/contexts/userContext';
@@ -21,6 +21,11 @@ import classes from './styles.module.css';
 type Poi = { key: string; location: google.maps.LatLngLiteral };
 
 export default function MapContainer() {
+    const [params] = useSearchParams();
+
+    const lat = params.get('lat');
+    const lng = params.get('lng');
+    
     const { user } = useContext(UserContext);
 
     const navigate = useNavigate();
@@ -39,7 +44,9 @@ export default function MapContainer() {
     const locationName = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (navigator.geolocation) {
+        if(lat && lng)
+            setCurrentLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
+        else if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 let pos = {
                     lat: position.coords.latitude,
@@ -49,11 +56,24 @@ export default function MapContainer() {
                 setCurrentLocation(pos);
             });
         }
+    }, []);
 
-        setLocations([
-            { key: 'operaHouse', location: { lat: 42.73698, lng: -84.483864 } },
-            { key: 'tarongaZoo', location: { lat: 42.93698, lng: -84.483164 } },
-        ]);
+    useEffect(() => {
+        (async function () {
+            const response = await fetch(`${BACKEND_URL}/map/getPin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: user!.id,
+                }),
+            });
+
+            const json = await response.json();
+
+            setLocations(json.Success ? json.Success : []);
+        })();
     }, []);
 
     function createModal(lat: number, lng: number) {
@@ -187,6 +207,10 @@ function PoiMarkers(props: {
 
     async function join() {
         setDetailsOpen(false);
+
+        const loc = props.pois.filter((p) => p.key === key)[0].location
+
+        window.open(`https://maps.google.com/?q=${loc.lat},${loc.lng}`, '_blank');
     }
 
     return (
@@ -207,7 +231,7 @@ function PoiMarkers(props: {
 
                     <div style={{ alignSelf: 'center' }}>
                         <button className={classes.closeButton} onClick={join}>
-                            Join
+                            Get Directions
                         </button>
                     </div>
                 </Modal>
