@@ -1,10 +1,12 @@
-// server.js
-
-require("dotenv").config(); // Load .env file
+require("dotenv").config();
 const express = require("express");
 const app = express();
+app.use(express.json());
+const axios = require("axios");
+
 const cors = require("cors");
 app.use(cors());
+
 
 // Import supabase-js
 const { createClient } = require("@supabase/supabase-js");
@@ -14,22 +16,34 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
-
-// Make supabase accessible to your routes via app locals (optional but neat)
 app.locals.supabase = supabase;
 
-// Body parsing middleware (for JSON form data)
-app.use(express.json());
+// Route to handle QR scanning request
+app.post("/api/qr-scan", async (req, res) => {
+  const { image_path } = req.body; // Frontend sends the image path
 
-// Import and mount the auth routes
+  try {
+    // Sending request to Python microservice
+    const response = await axios.post("http://localhost:5000/scan-qr", {
+      image_path,
+    });
+    res
+      .status(200)
+      .json({ message: "QR code scanned successfully!", data: response.data });
+  } catch (error) {
+    console.error("Error communicating with Python service:", error.message);
+    res.status(500).json({ error: "Failed to scan QR code." });
+  }
+});
+
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);
 
-// const blockchainRoutes = require('./routes/blockchain');
-// app.use('/blockchain', blockchainRoutes, authenticateSupabaseToken);
+const blockchainRoutes = require("./routes/blockchain");
+app.use("/blockchain", blockchainRoutes);
 
+// Root route for testing
 
-// Example root route
 app.get("/", (req, res) => {
   res.send("Hello World from Express + Supabase!");
 });
