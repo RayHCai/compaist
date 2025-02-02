@@ -31,8 +31,6 @@ async function sendEth(senderPublic, senderPrivate, receiverPublic, amount) {
 
     // Send the signed transaction
     const receipt = await w3.eth.sendSignedTransaction(signedTx.rawTransaction);
-
-    console.log("Transaction Hash:", receipt.transactionHash);
     return receipt;
   } catch (error) {
     console.error("Transaction Error:", error);
@@ -49,35 +47,41 @@ router.post("/send", async (req, res) => {
 });
 
 router.post("/scan/:userId/:pinId", async (req, res) => {
+  console.log("/scan called", req.params);
+
   const userId = req.params.userId;
   const pinId = req.params.pinId;
 
   const supabase = req.app.locals.supabase;
+
+  const { recId } = req.body;
+
+  const recResponse = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", recId);
+
+  const receiverPublic = recResponse.data[0].publicKey;
 
   const userResponse = await supabase
     .from("profile")
     .select("*")
     .eq("id", userId);
 
-  const pinResponse = await supabase.from("pin").select("*").eq("id", pinId);
-
   const user = userResponse.data[0];
-  const pin = pinResponse.data[0];
 
   const senderPublic = user.publicKey;
   const senderPrivate = user.privateKey;
 
-  const pinCreatorResponse = await supabase
-    .from("profile")
+  sendEth(senderPublic, senderPrivate, receiverPublic, 0.005);
+
+
+  const pinResponse = await supabase
+    .from("pin")
     .select("*")
-    .eq("id", pin.userId);
+    .eq("id", pinId);
 
-  const pinCreator = pinCreatorResponse.data[0];
-
-  const receiverPublic = pinCreator.publicKey;
-
-  sendEth(senderPublic, senderPrivate, receiverPublic, 0.1);
-
+    const pin = pinResponse.data[0];
   // increase the numVisits
 
   const { data, error } = await supabase
@@ -89,13 +93,11 @@ router.post("/scan/:userId/:pinId", async (req, res) => {
   if (error) {
     res.status(500).json({ error: error.message });
   } else {
-    res.status(200).json({ "Success": data.user });
+    res.status(200).json({ Success: data.user });
   }
 });
 
-router.post("/balance", async (req, res) => {
-  const { senderPublic } = req.body;
-
+async function getBalance(senderPublic) {
   const w3 = new Web3(
     new Web3.providers.HttpProvider(
       "https://sepolia.infura.io/v3/e65c23a9d95d4d78bd30120b9b0eab1c"
@@ -103,19 +105,21 @@ router.post("/balance", async (req, res) => {
   );
 
   const address1 = Web3.utils.toChecksumAddress(senderPublic);
+  try {
+    const balance = await w3.eth.getBalance(address1);
 
-  async function getBalance() {
-    try {
-      const balance = await w3.eth.getBalance(address1);
-
-      res.status(200).json(Number(balance) / 1e18);
-      return balance;
-    } catch (error) {
-      console.error("Balance Error:", error);
-    }
+    return Number(balance) / 1e18;
+  } catch (error) {
+    console.error("Balance Error:", error);
   }
+}
 
-  getBalance();
+router.post("/balance", async (req, res) => {
+  console.log("/balance called", req.body);
+  const { senderPublic } = req.body;
+
+  const balance = await getBalance(senderPublic);
+  res.status(200).json(balance);
 });
 
 module.exports = router;

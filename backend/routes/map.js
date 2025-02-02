@@ -73,6 +73,22 @@ router.post("/getPin", async (req, res) => {
   }
 });
 
+router.get("/getAllPins", async (req, res) => {
+    const supabase = req.app.locals.supabase;
+  
+    const { data, error } = await supabase
+      .from("pin")
+      .select("*");
+  
+    console.log(data);
+
+    if (error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(200).json(data);
+    }
+  });
+
 router.post("/getQR", async (req, res) => {
   const { pinId } = req.body;
   const supabase = req.app.locals.supabase;

@@ -3,11 +3,16 @@ const router = express.Router();
 
 // All of our routes will be prefixed with /auth, these are for registering and logging in users
 router.post("/register", async (req, res) => {
-  console.log(req.body);
-
-  const { email, password, firstName, LastName, privateKey, publicKey } = req.body;
-
-  console.log(email, password, firstName, LastName);
+  console.log("/register called", req.body);
+  const {
+    email,
+    password,
+    firstName,
+    LastName,
+    privateKey,
+    publicKey,
+    firstBalance,
+  } = req.body;
 
   const supabase = req.app.locals.supabase;
 
@@ -16,19 +21,29 @@ router.post("/register", async (req, res) => {
     password: password,
   });
 
-  const response = await supabase.from('profile').insert([{privateKey: privateKey, publicKey: publicKey, id: data.user.id}]);
+  const response = await supabase
+    .from("profile")
+    .insert([
+      {
+        privateKey: privateKey,
+        publicKey: publicKey,
+        id: data.user.id,
+        firstAmount: firstBalance,
+      },
+    ])
+    .select();
 
   if (error) {
     res.status(500).json({ error: error.message });
   } else {
-    res.status(200).json({ user: data.user, profile: response });
+    res.status(200).json({ user: data.user, profile: response.data[0] });
   }
 });
 
 router.post("/login", async (req, res) => {
   try {
+    console.log("/login called", req.body);
     const { email, password } = req.body;
-    console.log(email, req.body);
 
     const supabase = req.app.locals.supabase;
 
@@ -37,8 +52,10 @@ router.post("/login", async (req, res) => {
       password,
     });
 
-      const response = await supabase.from('profile').select('*').eq('id', data.user.id);
-
+    const response = await supabase
+      .from("profile")
+      .select("*")
+      .eq("id", data.user.id);
 
     if (error) {
       throw error;
@@ -54,7 +71,5 @@ router.post("/login", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
-
 
 module.exports = router;
