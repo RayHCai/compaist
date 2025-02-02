@@ -21,7 +21,7 @@ export default function Dashboard(props: { page: string }) {
 
     useEffect(() => {
         (async function () {
-            const response = await fetch(`${BACKEND_URL}/map/getPin`, {
+            const mapResponse = await fetch(`${BACKEND_URL}/map/getPin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,11 +31,9 @@ export default function Dashboard(props: { page: string }) {
                 }),
             });
 
-            const json = await response.json();
-            updatePins(json);
-        })();
+            const pin = await mapResponse.json();
+            updatePins(pin);
 
-        (async function () {
             const response = await fetch(`${BACKEND_URL}/blockchain/balance`, {
                 method: 'POST',
                 headers: {
@@ -45,7 +43,7 @@ export default function Dashboard(props: { page: string }) {
                     senderPublic: profile!.publicKey,
                 }),
             });
-
+    
             const json = await response.json();
             updateBalance(json);
         })();
@@ -88,7 +86,7 @@ export default function Dashboard(props: { page: string }) {
                     <div className="min-h-screen flex flex-col gap-20">
                         {props.page === 'feed' && (
                             <>
-                                <Wallet balance={ balance } />
+                                <Wallet balance={ balance } original={ profile.firstAmount } />
 
                                 {/* <Feed feed={ [] } noContentString="No recent deposits avaliable..." /> */}
                             </>

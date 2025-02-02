@@ -43,6 +43,18 @@ export default function Login() {
     }
 
     async function register() {
+        const responseBalance = await fetch(`${BACKEND_URL}/blockchain/balance`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                senderPublic: publicKey.current!.value,
+            }),
+        });
+
+        const balance = await responseBalance.json();
+        
         const response = await fetch(`${BACKEND_URL}/auth/register`, {
             method: 'POST',
             headers: {
@@ -55,11 +67,12 @@ export default function Login() {
                 password: password.current!.value,
                 publicKey: publicKey.current!.value,
                 privateKey: privateKey.current!.value,
+                firstBalance: balance,
             }),
         });
 
         const json = await response.json();
-        console.log(json);
+
         if (response.ok) {
             setUser(json.user);
             setProfile(json.profile);

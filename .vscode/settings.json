@@ -1,0 +1,9 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/a23d8720-8396-4d18-95de-9f4ed004e384/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/compaist",
+    "appService.deploySubpath": "backend",
+    "sarif-viewer.connectToGithubCodeScanning": "off"
+}

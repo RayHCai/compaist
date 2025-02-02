@@ -30,7 +30,8 @@ export default function MapContainer() {
 
     const navigate = useNavigate();
     
-    const [locations, setLocations] = useState<Poi[]>([]);
+    const [locations, setLocations] = useState<any[]>([]);
+    const [pois, updatePois] = useState<Poi[]>([]);
 
     const [currentLocation, setCurrentLocation] = useState<
         google.maps.LatLngLiteral | undefined
@@ -60,19 +61,16 @@ export default function MapContainer() {
 
     useEffect(() => {
         (async function () {
-            const response = await fetch(`${BACKEND_URL}/map/getPin`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: user!.id,
-                }),
-            });
+            const response = await fetch(`${BACKEND_URL}/map/getAllPins`);
 
             const json = await response.json();
-
-            setLocations(json.Success ? json.Success : []);
+            setLocations(json ? json : []);
+            updatePois(json.map(
+                (location: any) => ({
+                    key: location.name,
+                    location: { lat: location.lat, lng: location.lng },
+                })
+            ));
         })();
     }, []);
 
@@ -83,8 +81,6 @@ export default function MapContainer() {
     }
 
     async function createPin() {
-        console.log(user);
-
         if (locationName.current) {
             const response = await fetch(`${BACKEND_URL}/map/pin`, {
                 method: 'POST',
@@ -100,8 +96,6 @@ export default function MapContainer() {
             });
 
             const json = await response.json();
-
-            console.log(json);
 
             setLocations([
                 ...locations,
@@ -172,7 +166,7 @@ export default function MapContainer() {
                         }}
                     >
                         <PoiMarkers
-                            pois={locations}
+                            pois={pois}
                             currentLocation={currentLocation}
                         />
                     </Map>

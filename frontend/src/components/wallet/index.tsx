@@ -13,9 +13,12 @@ function Card(props: PropsWithChildren & { title: string; stat: string }) {
 
 type WalletProps = {
     balance: number;
+    original: number;
 };
 
 export default function Wallet(props: WalletProps) {
+    const difference = Number(String(props.balance - props.original).substring(0, 9));
+    console.log(difference);
     return (
         <div className={ classes.container }>
             <div className={ classes.headerContainer }>
@@ -24,11 +27,10 @@ export default function Wallet(props: WalletProps) {
             </div>
 
             <div className={ classes.cardsContainer }>
-                <Card title="Your Balance" stat={`$${props.balance}`} />
-                {/* <Card title="Your Deposits" stat="33" />
-                <Card title="Pounds Donated" stat="33 lbs" /> */}
+                <Card title="Your Balance" stat={`${String(props.balance).substring(0, 8)} ETH`} />
+                <Card title="Your Earnings" stat={`+${difference} ETH`} />
+                <Card title="You've donated" stat={`${Math.ceil(difference / 0.05) * 10} lbs`} />
             </div>
-
         </div>
     );
 }
