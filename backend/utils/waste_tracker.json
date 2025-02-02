@@ -1,0 +1,95 @@
+{
+  "address": "9SQLaWQuJmTeYaeHSe6R4WRCUUTa6jGSjpm8c7orut6A",
+  "metadata": {
+    "name": "waste_tracker",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "log_waste",
+      "discriminator": [
+        26,
+        243,
+        80,
+        100,
+        27,
+        46,
+        215,
+        226
+      ],
+      "accounts": [
+        {
+          "name": "waste",
+          "writable": true,
+        
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+    
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "weight",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Waste",
+      "discriminator": [
+        77,
+        32,
+        129,
+        46,
+        45,
+        135,
+        149,
+        121
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Waste",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_weight",
+            "type": "u64"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}
