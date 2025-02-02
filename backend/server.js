@@ -1,41 +1,53 @@
 // server.js
 
-require("dotenv").config(); // Load .env file
-const express = require("express");
+const axios = require("axios");          // For making HTTP requests to Python service
+require("dotenv").config();              // Load .env file
+const express = require("express");      
+const cors = require("cors");            
+const { createClient } = require("@supabase/supabase-js"); // Supabase client
+
 const app = express();
-const cors = require("cors");
-app.use(cors());
+app.use(cors());                         // Enable CORS
+app.use(express.json());                 // Middleware to parse JSON
 
-// Import supabase-js
-const { createClient } = require("@supabase/supabase-js");
-
-// Create Supabase client
+// ✅ Initialize Supabase
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
+app.locals.supabase = supabase;          // Make Supabase accessible globally
 
-// Make supabase accessible to your routes via app locals (optional but neat)
-app.locals.supabase = supabase;
-
-// Body parsing middleware (for JSON form data)
-app.use(express.json());
-
-// Import and mount the auth routes
+// ✅ Import and Mount Auth Routes
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);
 
+// 🗑️ Removed redundant blockchain route (add back when needed)
 // const blockchainRoutes = require('./routes/blockchain');
-// app.use('/blockchain', blockchainRoutes, authenticateSupabaseToken);
+// app.use('/blockchain', blockchainRoutes);
 
+// ✅ Route to Handle QR Code Scanning
+app.post("/api/qr-code", async (req, res) => {
+  const { image_path } = req.body;
 
-// Example root route
-app.get("/", (req, res) => {
-  res.send("Hello World from Express + Supabase!");
+  try {
+    const response = await axios.post("http://localhost:5000/api/scan-qr", { image_path });
+    res.status(200).json({
+      message: "✅ QR code scanned successfully!",
+      data: response.data,
+    });
+  } catch (error) {
+    console.error("❌ Error communicating with Python service:", error.message);
+    res.status(500).json({ error: "Failed to scan QR code." });
+  }
 });
 
-// Start server
-const PORT = 3001;
+// ✅ Root Route for Testing
+app.get("/", (req, res) => {
+  res.send("Hello from Express + Supabase + QR Scanner!");
+});
+
+// ✅ Start Server
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
