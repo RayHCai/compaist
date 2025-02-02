@@ -14,15 +14,14 @@ app.use(express.json());                 // Middleware to parse JSON
 require("dotenv").config();
 const express = require("express");
 const app = express();
-app.use(express.json());
 const axios = require("axios");
-
 const cors = require("cors");
-app.use(cors());
-
-
-// Import supabase-js
 const { createClient } = require("@supabase/supabase-js");
+
+
+// ✅ Middleware
+app.use(cors());                         // Enable CORS
+app.use(express.json());                 // Middleware to parse JSON
 
 
 // ✅ Initialize Supabase
@@ -61,32 +60,47 @@ app.post("/api/qr-code", async (req, res) => {
 
 app.locals.supabase = supabase;
 
-// Route to handle QR scanning request
+// ✅ Import and Mount Routes
+const authRoutes = require("./routes/auth");
+const blockchainRoutes = require("./routes/blockchain");
+app.use("/blockchain", blockchainRoutes);
+
+app.use("/auth", authRoutes);
+
+
+// ✅ Route to Handle QR Code Scanning
 app.post("/api/qr-scan", async (req, res) => {
   const { image_path } = req.body; // Frontend sends the image path
 
   try {
-    // Sending request to Python microservice
-    const response = await axios.post("http://localhost:5000/scan-qr", {
-      image_path,
+    const response = await axios.post("http://localhost:5000/scan-qr", { image_path });
+    res.status(200).json({
+      message: "✅ QR code scanned successfully!",
+      data: response.data,
     });
-    res
-      .status(200)
-      .json({ message: "QR code scanned successfully!", data: response.data });
   } catch (error) {
-    console.error("Error communicating with Python service:", error.message);
+    console.error("❌ Error communicating with Python service:", error.message);
     res.status(500).json({ error: "Failed to scan QR code." });
   }
 });
 
-const authRoutes = require("./routes/auth");
-app.use("/auth", authRoutes);
+// ✅ Additional QR Code Route
+app.post("/api/qr-code", async (req, res) => {
+  const { image_path } = req.body;
 
-const blockchainRoutes = require("./routes/blockchain");
-app.use("/blockchain", blockchainRoutes);
+  try {
+    const response = await axios.post("http://localhost:5000/api/scan-qr", { image_path });
+    res.status(200).json({
+      message: "✅ QR code scanned successfully!",
+      data: response.data,
+    });
+  } catch (error) {
+    console.error("❌ Error communicating with Python service:", error.message);
+    res.status(500).json({ error: "Failed to scan QR code." });
+  }
+});
 
-// Root route for testing
-
+// ✅ Root Route for Testing
 app.get("/", (req, res) => {
   res.send("Hello from Express + Supabase + QR Scanner!");
 });
