@@ -9,16 +9,15 @@
         "lint:fix": "eslint --fix --ext .ts,.tsx ."
     },
     "dependencies": {
+        "@googlemaps/markerclusterer": "^2.5.1",
+        "@vis.gl/react-google-maps": "latest",
         "autoprefixer": "^10.4.20",
         "googlemaps": "^1.12.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-google-maps": "^9.4.5",
         "react-router": "^7.1.5",
         "react-router-dom": "^7.1.5",
-        "react-scripts": "^5.0.1",
-        "@googlemaps/markerclusterer": "^2.5.1",
-        "@vis.gl/react-google-maps": "latest"
+        "react-scripts": "^5.0.1"
     },
     "devDependencies": {
         "@babel/core": "^7.22.9",
