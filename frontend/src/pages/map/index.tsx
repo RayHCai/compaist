@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useContext } from 'react';
 
 import {
     APIProvider,
@@ -11,14 +11,18 @@ import {
 
 import Modal from '@/components/modal';
 import { distanceBetweenPoints } from '@googlemaps/markerclusterer';
-
 import { useNavigate } from 'react-router';
+
+import { BACKEND_URL } from '@/settings';
+import { UserContext } from '@/contexts/userContext';
 
 import classes from './styles.module.css';
 
 type Poi = { key: string; location: google.maps.LatLngLiteral };
 
 export default function MapContainer() {
+    const { user } = useContext(UserContext);
+
     const navigate = useNavigate();
     
     const [locations, setLocations] = useState<Poi[]>([]);
@@ -59,7 +63,26 @@ export default function MapContainer() {
     }
 
     async function createPin() {
+        console.log(user);
+
         if (locationName.current) {
+            const response = await fetch(`${BACKEND_URL}/map/pin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: user!.id,
+                    name: locationName.current.value,
+                    lat: newLat,
+                    lng: newLng,
+                }),
+            });
+
+            const json = await response.json();
+
+            console.log(json);
+
             setLocations([
                 ...locations,
                 {
