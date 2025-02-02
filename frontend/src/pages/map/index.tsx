@@ -9,124 +9,193 @@ import {
     Pin,
 } from '@vis.gl/react-google-maps';
 
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import type { Marker } from '@googlemaps/markerclusterer';
+import Modal from '@/components/modal';
+import { distanceBetweenPoints } from '@googlemaps/markerclusterer';
 
-import { Circle } from '@/components/circle';
+import { useNavigate } from 'react-router';
+
+import classes from './styles.module.css';
 
 type Poi = { key: string; location: google.maps.LatLngLiteral };
-const locations: Poi[] = [
-    { key: 'operaHouse', location: { lat: -33.8567844, lng: 151.213108 } },
-    { key: 'tarongaZoo', location: { lat: -33.8472767, lng: 151.2188164 } },
-    { key: 'manlyBeach', location: { lat: -33.8209738, lng: 151.2563253 } },
-    { key: 'hyderPark', location: { lat: -33.8690081, lng: 151.2052393 } },
-    { key: 'theRocks', location: { lat: -33.8587568, lng: 151.2058246 } },
-    { key: 'circularQuay', location: { lat: -33.858761, lng: 151.2055688 } },
-    { key: 'harbourBridge', location: { lat: -33.852228, lng: 151.2038374 } },
-    { key: 'kingsCross', location: { lat: -33.8737375, lng: 151.222569 } },
-    { key: 'botanicGardens', location: { lat: -33.864167, lng: 151.216387 } },
-    { key: 'museumOfSydney', location: { lat: -33.8636005, lng: 151.2092542 } },
-    { key: 'maritimeMuseum', location: { lat: -33.869395, lng: 151.198648 } },
-    {
-        key: 'kingStreetWharf',
-        location: { lat: -33.8665445, lng: 151.1989808 },
-    },
-    { key: 'aquarium', location: { lat: -33.869627, lng: 151.202146 } },
-    { key: 'darlingHarbour', location: { lat: -33.87488, lng: 151.1987113 } },
-    { key: 'barangaroo', location: { lat: -33.8605523, lng: 151.1972205 } },
-];
 
 export default function MapContainer() {
-    return (
-        <div style={{ height: '100vh', width: '100%' }}>
-            <APIProvider
-                apiKey="AIzaSyBkj9JYHrTI5l4e9RMlgsDWdNsnjF0-Qc4"
-                onLoad={() => console.log('Maps API has loaded.')}
-            >
-                <Map
-                    defaultZoom={13}
-                    defaultCenter={{ lat: -33.860664, lng: 151.208138 }}
-                    onCameraChanged={(ev: MapCameraChangedEvent) =>
-                        console.log(
-                            'camera changed:',
-                            ev.detail.center,
-                            'zoom:',
-                            ev.detail.zoom
-                        )
-                    }
-                    mapId="da37f3254c6a6d1c"
-                >
-                    <PoiMarkers pois={locations} />
-                </Map>
-            </APIProvider>
-        </div>
-    );
-}
+    const navigate = useNavigate();
+    
+    const [locations, setLocations] = useState<Poi[]>([]);
 
-let infoWindow = new google.maps.InfoWindow();
+    const [currentLocation, setCurrentLocation] = useState<
+        google.maps.LatLngLiteral | undefined
+    >(undefined);
 
-function PoiMarkers(props: { pois: Poi[] }) {
-    const map = useMap();
-    const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
-    const clusterer = useRef<MarkerClusterer | null>(null);
-    const [circleCenter, setCircleCenter] = useState<google.maps.LatLng | null>(null);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
 
-    const handleClick = useCallback((ev: google.maps.MapMouseEvent) => {
-        if (!map) return;
-        if (!ev.latLng) return;
-        console.log('marker clicked: ', ev.latLng.toString());
-        map.panTo(ev.latLng);
-        setCircleCenter(ev.latLng);
+    const [newLat, setNewLat] = useState(0);
+    const [newLng, setNewLng] = useState(0);
+
+    const locationName = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                let pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+
+                setCurrentLocation(pos);
+            });
+        }
+
+        setLocations([
+            { key: 'operaHouse', location: { lat: 42.73698, lng: -84.483864 } },
+            { key: 'tarongaZoo', location: { lat: 42.93698, lng: -84.483164 } },
+        ]);
     }, []);
 
-    // Initialize MarkerClusterer, if the map has changed
-    useEffect(() => {
-        if (!map) return;
-        if (!clusterer.current) {
-            clusterer.current = new MarkerClusterer({ map });
+    function createModal(lat: number, lng: number) {
+        setCreateModalOpen(true);
+        setNewLat(lat);
+        setNewLng(lng);
+    }
+
+    async function createPin() {
+        if (locationName.current) {
+            setLocations([
+                ...locations,
+                {
+                    key: locationName.current.value,
+                    location: { lat: newLat, lng: newLng },
+                },
+            ]);
         }
-    }, [map]);
 
-    // Update markers, if the markers array has changed
-    useEffect(() => {
-        clusterer.current?.clearMarkers();
-        clusterer.current?.addMarkers(Object.values(markers));
-    }, [markers]);
-
-    const setMarkerRef = (marker: Marker | null, key: string) => {
-        if (marker && markers[key]) return;
-        if (!marker && !markers[key]) return;
-
-        setMarkers((prev) => {
-            if (marker) {
-                return { ...prev, [key]: marker };
-            } else {
-                const newMarkers = { ...prev };
-                delete newMarkers[key];
-                return newMarkers;
-            }
-        });
-    };
+        setCreateModalOpen(false);
+    }
 
     return (
         <>
-            <Circle
-                radius={800}
-                center={circleCenter}
-                strokeColor={'#0c4cb3'}
-                strokeOpacity={1}
-                strokeWeight={3}
-                fillColor={'#3b82f6'}
-                fillOpacity={0.3}
-            />
+            {createModalOpen && (
+                <Modal onClose={() => setCreateModalOpen(false)}>
+                    <div className={classes.modalContent}>
+                        <div className={classes.inputContainer}>
+                            <label
+                                htmlFor="price"
+                                className="block text-sm/6 font-medium text-gray-900"
+                            >
+                                Location Name
+                            </label>
+
+                            <div className="mt-2">
+                                <div className="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-black-600">
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        type="text"
+                                        placeholder="Name"
+                                        className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        ref={locationName}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ alignSelf: 'center' }}>
+                        <button
+                            className={classes.closeButton}
+                            onClick={createPin}
+                        >
+                            Create
+                        </button>
+                    </div>
+                </Modal>
+            )}
+
+            <div style={{ height: '100vh', width: '100%' }}>
+                <APIProvider
+                    apiKey="AIzaSyBkj9JYHrTI5l4e9RMlgsDWdNsnjF0-Qc4"
+                    onLoad={() => console.log('Maps API has loaded.')}
+                >
+                    <Map
+                        defaultZoom={13}
+                        defaultCenter={currentLocation}
+                        onCameraChanged={(_ev: MapCameraChangedEvent) => {}}
+                        mapId="da37f3254c6a6d1c"
+                        onClick={(ev) => {
+                            createModal(
+                                ev.detail.latLng!.lat,
+                                ev.detail.latLng!.lng
+                            );
+                        }}
+                    >
+                        <PoiMarkers
+                            pois={locations}
+                            currentLocation={currentLocation}
+                        />
+                    </Map>
+                </APIProvider>
+            </div>
+
+            <button className={ classes.returnHomeButton } onClick={ () => navigate('/dashboard') }>Return home</button>
+        </>
+    );
+}
+
+function PoiMarkers(props: {
+    pois: Poi[];
+    currentLocation: google.maps.LatLngLiteral | undefined;
+}) {
+    const map = useMap();
+    const [detailsOpen, setDetailsOpen] = useState(false);
+    const [key, setKey] = useState('');
+
+    const handleClick = useCallback(
+        (ev: google.maps.MapMouseEvent, poi: Poi) => {
+            if (!map) return;
+            if (!ev.latLng) return;
+
+            map.panTo(ev.latLng);
+
+            setKey(poi.key);
+            setDetailsOpen(true);
+        },
+        []
+    );
+
+    async function join() {
+        setDetailsOpen(false);
+    }
+
+    return (
+        <>
+            {detailsOpen && (
+                <Modal onClose={() => setDetailsOpen(false)}>
+                    <div className={classes.poiModalContent}>
+                        <h1>{key}</h1>
+
+                        <p>
+                            {Math.round(distanceBetweenPoints(
+                                props.currentLocation!,
+                                props.pois.filter((p) => p.key === key)[0]
+                                    .location
+                            ))} miles away
+                        </p>
+                    </div>
+
+                    <div style={{ alignSelf: 'center' }}>
+                        <button className={classes.closeButton} onClick={join}>
+                            Join
+                        </button>
+                    </div>
+                </Modal>
+            )}
 
             {props.pois.map((poi: Poi) => (
                 <AdvancedMarker
                     key={poi.key}
                     position={poi.location}
-                    ref={(marker) => setMarkerRef(marker, poi.key)}
                     clickable={true}
-                    onClick={handleClick}
+                    onClick={(ev) => handleClick(ev, poi)}
                 >
                     <Pin
                         background={'#FBBC04'}
