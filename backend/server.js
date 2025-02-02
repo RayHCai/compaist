@@ -4,6 +4,10 @@ const app = express();
 app.use(express.json());
 const axios = require("axios");
 
+const cors = require("cors");
+app.use(cors());
+
+
 // Import supabase-js
 const { createClient } = require("@supabase/supabase-js");
 
@@ -39,6 +43,7 @@ const blockchainRoutes = require("./routes/blockchain");
 app.use("/blockchain", blockchainRoutes);
 
 // Root route for testing
+
 app.get("/", (req, res) => {
   res.send("Hello World from Express + Supabase!");
 });

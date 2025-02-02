@@ -3,7 +3,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Home from './pages/home';
 import Login from './pages/login/login';
-import Map from './pages/map';
+import MapContainer from './pages/map';
+import Dashboard from './pages/dashboard'
+
+import PrivateRoute from './components/privateRoute';
 
 import UserContextWrapper from './contexts/userContext';
 
@@ -20,7 +23,17 @@ function App() {
 
                     <Route path="/login" Component={ Login } />
 
-                    <Route path="/map" Component={ Map } />
+                    <Route path="/map" Component={ MapContainer } />
+                    {/* <Route path="/map" Component={PrivateRoute}>
+                    </Route> */}
+
+                    <Route path="/dashboard">
+                        <Route path="/dashboard" element={ <Dashboard page="feed" /> } />
+                        <Route path="/dashboard/pins" element={ <Dashboard page="pins" /> } />
+                    </Route>
+
+                    {/* <Route path="/dashboard" Component={PrivateRoute}>
+                    </Route> */}
                 </Routes>
             </BrowserRouter>
         </UserContextWrapper>
