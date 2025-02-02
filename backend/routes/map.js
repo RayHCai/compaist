@@ -15,52 +15,45 @@ function uuidv4() {
 router.post("/pin", async (req, res) => {
   const { name, lat, lng, userId } = req.body;
 
+  // pin id
   const newId = uuidv4();
 
-  QRCode.toFile(
-    `codes/${newId}.png`,
-    `${process.env.FRONTEND_URL}/scan/${userId}/${newId}`,
-    function (err, url) {
-      console.log(err, url);
+  QRCode.toDataURL(
+    // `codes/${newId}.png`,
+    `${process.env.BACKEND_URL}/blockchain/scan/${userId}/${newId}`,
+    async function (err, url) {
+      let blob = await fetch(url).then((r) => r.blob());
+      const supabase = req.app.locals.supabase;
+
+      const response = await supabase.storage
+        .from("codes")
+        .upload(`codes/${newId}.png`, blob, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      const { data, error } = await supabase
+        .from("pin")
+        .insert([
+          {
+            name: name,
+            lat: lat,
+            lng: lng,
+            userId: userId,
+            id: newId,
+            qrCode: response.data.path,
+            numVisits: 0,
+          },
+        ])
+        .select();
+
+      if (error) {
+        res.status(500).json({ error: error.message });
+      } else {
+        res.status(200).json({ "Pin created successfully": data.user });
+      }
     }
   );
-
-  const supabase = req.app.locals.supabase;
-
-  // set the file to a variable
-  let imageId;
-
-  (async function() {
-    const { data, error } = await supabase.storage
-    .from("codes")
-    .upload(`codes/${newId}.png`, {
-      cacheControl: "3600",
-      upsert: false,
-    });
-
-    imageId = data.id;
-  })();
-
-  const { data, error } = await supabase
-    .from("pin")
-    .insert([
-      {
-        name: name,
-        lat: lat,
-        lng: lng,
-        userId: userId,
-        id: newId,
-        qrCode: imageId,
-        numVisits: 0
-      },
-    ])
-    .select();
-
-  if (error) {
-    res.status(500).json({ error: error.message });
-  } else {
-    res.status(200).json({ "Pin created successfully": data.user });
-  }
 });
 
 router.post("/getPin", async (req, res) => {
@@ -77,6 +70,26 @@ router.post("/getPin", async (req, res) => {
     res.status(500).json({ error: error.message });
   } else {
     res.status(200).json(data);
+  }
+});
+
+router.post("/getQR", async (req, res) => {
+  const { pinId } = req.body;
+  const supabase = req.app.locals.supabase;
+
+  const { data, error } = await supabase
+    .from("pin")
+    .select("*")
+    .eq("id", pinId);
+
+  if (error) {
+    res.status(500).json({ error: error.message });
+  } else {
+    res
+      .status(200)
+      .json(
+        `https://vwdwawbkaxontmxkfvwr.supabase.co/storage/v1/object/public/codes/${data[0].qrCode}`
+      );
   }
 });
 

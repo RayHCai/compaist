@@ -8,13 +8,16 @@ import classes from './styles.module.css';
 
 export default function Login() {
     const navigate = useNavigate();
-    const { setUser } = useContext(UserContext);
+    const { setUser, setProfile } = useContext(UserContext);
 
     const firstName = useRef<HTMLInputElement>(null);
     const lastName = useRef<HTMLInputElement>(null);
 
     const email = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
+
+    const publicKey = useRef<HTMLInputElement>(null);
+    const privateKey = useRef<HTMLInputElement>(null);
 
     const [loggingIn, setLoggingIn] = useState(true);
 
@@ -32,10 +35,9 @@ export default function Login() {
 
         const json = await response.json();
 
-        console.log(json);
-
         if (response.ok) {
             setUser(json.user);
+            setProfile(json.profile);
             navigate('/dashboard');
         }
     }
@@ -51,15 +53,16 @@ export default function Login() {
                 lastName: lastName.current!.value,
                 email: email.current!.value,
                 password: password.current!.value,
+                publicKey: publicKey.current!.value,
+                privateKey: privateKey.current!.value,
             }),
         });
 
         const json = await response.json();
-
         console.log(json);
-
         if (response.ok) {
             setUser(json.user);
+            setProfile(json.profile);
             navigate('/dashboard');
         }
     }
@@ -135,6 +138,48 @@ export default function Login() {
                                             autoComplete="name"
                                             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
                                             ref={lastName}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label
+                                        htmlFor="email"
+                                        className="block text-sm/6 font-medium text-gray-900"
+                                    >
+                                        Public Key
+                                    </label>
+
+                                    <div className="mt-2">
+                                        <input
+                                            id="firstName"
+                                            name="firstName"
+                                            type="text"
+                                            required
+                                            autoComplete="name"
+                                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
+                                            ref={publicKey}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label
+                                        htmlFor="email"
+                                        className="block text-sm/6 font-medium text-gray-900"
+                                    >
+                                        Private Key
+                                    </label>
+
+                                    <div className="mt-2">
+                                        <input
+                                            id="firstName"
+                                            name="firstName"
+                                            type="password"
+                                            required
+                                            autoComplete="name"
+                                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
+                                            ref={privateKey}
                                         />
                                     </div>
                                 </div>
