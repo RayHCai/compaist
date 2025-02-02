@@ -1,2 +1,6 @@
 node_modules/
 .env
+venv/
+tf-venv/
+venv
+tf-venv
