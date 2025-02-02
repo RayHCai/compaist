@@ -1,0 +1,49 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    background: rgba(0, 0, 0, 0.933);
+    height: 100%;
+    padding: 20px;
+    color: white;
+}
+
+.sidebar h1 {
+    font-size: 30px;
+    font-family: var(--font-family);
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 30px;
+}
+
+.sidebar h1:hover {
+    opacity: 0.8;
+}
+
+.sidebarElements {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sidebarElement {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 5px;
+}
+
+.active {
+    background: rgba(255, 255, 255, 0.077);
+}
+
+.sidebarElement:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.bottom {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
