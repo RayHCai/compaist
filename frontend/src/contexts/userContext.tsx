@@ -6,13 +6,13 @@ export const UserContext = createContext<
         profile: any;
         setUser: (user: User | null) => void;
         setProfile: (_profile: any) => void;
-    }
->({
-    user: null,
-    profile: null,
-    setUser: (_user: User | null) => {},
-    setProfile: (_profile: any) => {}
-});
+            }
+            >({
+                user: null,
+                profile: null,
+                setUser: (_user: User | null) => {},
+                setProfile: (_profile: any) => {}
+            });
 
 export default function UserContextWrapper(props: PropsWithChildren) {
     const [user, setUser] = useState<User | null>(null);
@@ -20,8 +20,8 @@ export default function UserContextWrapper(props: PropsWithChildren) {
     const [profile, setProfile] = useState<User | null>(null);
 
     return (
-        <UserContext.Provider value={{ user, setUser, profile, setProfile }}>
-            {props.children}
+        <UserContext.Provider value={ { user, setUser, profile, setProfile } }>
+            { props.children }
         </UserContext.Provider>
     );
 }

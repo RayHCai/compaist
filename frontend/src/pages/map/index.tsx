@@ -49,7 +49,7 @@ export default function MapContainer() {
             setCurrentLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
         else if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
-                let pos = {
+                const pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                 };
@@ -111,10 +111,10 @@ export default function MapContainer() {
 
     return (
         <>
-            {createModalOpen && (
-                <Modal onClose={() => setCreateModalOpen(false)}>
-                    <div className={classes.modalContent}>
-                        <div className={classes.inputContainer}>
+            { createModalOpen && (
+                <Modal onClose={ () => setCreateModalOpen(false) }>
+                    <div className={ classes.modalContent }>
+                        <div className={ classes.inputContainer }>
                             <label
                                 htmlFor="price"
                                 className="block text-sm/6 font-medium text-gray-900"
@@ -130,44 +130,44 @@ export default function MapContainer() {
                                         type="text"
                                         placeholder="Name"
                                         className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                        ref={locationName}
+                                        ref={ locationName }
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div style={{ alignSelf: 'center' }}>
+                    <div style={ { alignSelf: 'center' } }>
                         <button
-                            className={classes.closeButton}
-                            onClick={createPin}
+                            className={ classes.closeButton }
+                            onClick={ createPin }
                         >
                             Create
                         </button>
                     </div>
                 </Modal>
-            )}
+            ) }
 
-            <div style={{ height: '100vh', width: '100%' }}>
+            <div style={ { height: '100vh', width: '100%' } }>
                 <APIProvider
                     apiKey="REDACTED"
-                    onLoad={() => console.log('Maps API has loaded.')}
+                    onLoad={ () => console.log('Maps API has loaded.') }
                 >
                     <Map
-                        defaultZoom={13}
-                        defaultCenter={currentLocation}
-                        onCameraChanged={(_ev: MapCameraChangedEvent) => {}}
+                        defaultZoom={ 13 }
+                        defaultCenter={ currentLocation }
+                        onCameraChanged={ (_ev: MapCameraChangedEvent) => {} }
                         mapId="da37f3254c6a6d1c"
-                        onClick={(ev) => {
+                        onClick={ (ev) => {
                             createModal(
                                 ev.detail.latLng!.lat,
                                 ev.detail.latLng!.lng
                             );
-                        }}
+                        } }
                     >
                         <PoiMarkers
-                            pois={pois}
-                            currentLocation={currentLocation}
+                            pois={ pois }
+                            currentLocation={ currentLocation }
                         />
                     </Map>
                 </APIProvider>
@@ -202,49 +202,49 @@ function PoiMarkers(props: {
     async function join() {
         setDetailsOpen(false);
 
-        const loc = props.pois.filter((p) => p.key === key)[0].location
+        const loc = props.pois.filter((p) => p.key === key)[0].location;
 
         window.open(`https://maps.google.com/?q=${loc.lat},${loc.lng}`, '_blank');
     }
 
     return (
         <>
-            {detailsOpen && (
-                <Modal onClose={() => setDetailsOpen(false)}>
-                    <div className={classes.poiModalContent}>
-                        <h1>{key}</h1>
+            { detailsOpen && (
+                <Modal onClose={ () => setDetailsOpen(false) }>
+                    <div className={ classes.poiModalContent }>
+                        <h1>{ key }</h1>
 
                         <p>
-                            {Math.round(distanceBetweenPoints(
+                            { Math.round(distanceBetweenPoints(
                                 props.currentLocation!,
                                 props.pois.filter((p) => p.key === key)[0]
                                     .location
-                            ))} miles away
+                            )) } miles away
                         </p>
                     </div>
 
-                    <div style={{ alignSelf: 'center' }}>
-                        <button className={classes.closeButton} onClick={join}>
+                    <div style={ { alignSelf: 'center' } }>
+                        <button className={ classes.closeButton } onClick={ join }>
                             Get Directions
                         </button>
                     </div>
                 </Modal>
-            )}
+            ) }
 
-            {props.pois.map((poi: Poi) => (
+            { props.pois.map((poi: Poi) => (
                 <AdvancedMarker
-                    key={poi.key}
-                    position={poi.location}
-                    clickable={true}
-                    onClick={(ev) => handleClick(ev, poi)}
+                    key={ poi.key }
+                    position={ poi.location }
+                    clickable={ true }
+                    onClick={ (ev) => handleClick(ev, poi) }
                 >
                     <Pin
-                        background={'#FBBC04'}
-                        glyphColor={'#000'}
-                        borderColor={'#000'}
+                        background={ '#FBBC04' }
+                        glyphColor={ '#000' }
+                        borderColor={ '#000' }
                     />
                 </AdvancedMarker>
-            ))}
+            )) }
         </>
     );
 }

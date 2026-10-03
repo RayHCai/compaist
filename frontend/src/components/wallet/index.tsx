@@ -27,9 +27,9 @@ export default function Wallet(props: WalletProps) {
             </div>
 
             <div className={ classes.cardsContainer }>
-                <Card title="Your Balance" stat={`${String(props.balance).substring(0, 8)} ETH`} />
-                <Card title="Your Earnings" stat={`+${difference} ETH`} />
-                <Card title="You've donated" stat={`${Math.ceil(difference / 0.05) * 10} lbs`} />
+                <Card title="Your Balance" stat={ `${String(props.balance).substring(0, 8)} ETH` } />
+                <Card title="Your Earnings" stat={ `+${difference} ETH` } />
+                <Card title="You've donated" stat={ `${Math.ceil(difference / 0.05) * 10} lbs` } />
             </div>
         </div>
     );

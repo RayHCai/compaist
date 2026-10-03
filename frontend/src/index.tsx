@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/home';
 import Login from './pages/login/login';
 import MapContainer from './pages/map';
-import Dashboard from './pages/dashboard'
+import Dashboard from './pages/dashboard';
 
 import PrivateRoute from './components/privateRoute';
 
@@ -23,12 +23,12 @@ function App() {
 
                     <Route path="/login" Component={ Login } />
 
-                    <Route path="/map" Component={PrivateRoute}>
+                    <Route path="/map" Component={ PrivateRoute }>
                         <Route path="/map" Component={ MapContainer } />
                         <Route path="/map/:lat/:lng" Component={ MapContainer } />
                     </Route>
 
-                    <Route path="/dashboard" Component={PrivateRoute}>
+                    <Route path="/dashboard" Component={ PrivateRoute }>
                         <Route path="/dashboard" element={ <Dashboard page="feed" /> } />
                         <Route path="/dashboard/pins" element={ <Dashboard page="pins" /> } />
                     </Route>
