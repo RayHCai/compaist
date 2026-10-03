@@ -71,62 +71,62 @@ export default function Dashboard(props: { page: string }) {
         <>
             {
                 qrCode.length !== 0 && (
-                    <Modal onClose={() => updateQrCode('')} >
+                    <Modal onClose={ () => updateQrCode('') } >
                         <img src={ qrCode } />
                     </Modal>
                 )
             }
 
-            <div className={classes.container}>
-                <div className={classes.sidebarContainer}>
+            <div className={ classes.container }>
+                <div className={ classes.sidebarContainer }>
                     <Sidebar />
                 </div>
 
-                <div className={classes.mainContentContainer}>
+                <div className={ classes.mainContentContainer }>
                     <div className="min-h-screen flex flex-col gap-20">
-                        {props.page === 'feed' && (
+                        { props.page === 'feed' && (
                             <>
                                 <Wallet balance={ balance } original={ profile.firstAmount } />
 
-                                {/* <Feed feed={ [] } noContentString="No recent deposits avaliable..." /> */}
+                                { /* <Feed feed={ [] } noContentString="No recent deposits avaliable..." /> */ }
                             </>
-                        )}
+                        ) }
 
-                        {props.page === 'pins' && (
+                        { props.page === 'pins' && (
                             <>
-                                {pins.length === 0 && (
-                                    <p className={classes.noDeposists}>
+                                { pins.length === 0 && (
+                                    <p className={ classes.noDeposists }>
                                         No pins avaliable...
                                     </p>
-                                )}
+                                ) }
 
                                 <div
-                                    style={{
+                                    style={ {
                                         display: 'flex',
                                         flexDirection: 'column',
                                         gap: '20px',
-                                    }}
+                                    } }
                                 >
-                                    {pins.map((pin: any) => {
+                                    { pins.map((pin: any) => {
                                         return (
                                             <div
-                                                key={pin.id}
+                                                key={ pin.id }
                                                 className="cursor-pointer bg-black p-4 rounded-md shadow-md text-white flex justify-between items-center"
                                             >
                                                 <div
-                                                    onClick={() => {
+                                                    onClick={ () => {
                                                         navigate(
                                                             `/map/${pin.lat}/${pin.lng}`
                                                         );
-                                                    }}
+                                                    } }
                                                 >
                                                     <h1 className="text-xl font-bold">
-                                                        {pin.name}
+                                                        { pin.name }
                                                     </h1>
 
                                                     <p className="text-sm text-gray-200">
-                                                        Num Visits:{' '}
-                                                        {pin.numVisits}
+                                                        Num Visits:{ ' ' }
+                                                        { pin.numVisits }
                                                     </p>
                                                 </div>
 
@@ -135,17 +135,17 @@ export default function Dashboard(props: { page: string }) {
                                                         className={
                                                             classes.qrButton
                                                         }
-                                                        onClick={() => viewQRCode(pin.id)}
+                                                        onClick={ () => viewQRCode(pin.id) }
                                                     >
                                                         View QR Code
                                                     </button>
                                                 </div>
                                             </div>
                                         );
-                                    })}
+                                    }) }
                                 </div>
                             </>
-                        )}
+                        ) }
                     </div>
                 </div>
             </div>

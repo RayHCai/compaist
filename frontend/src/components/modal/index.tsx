@@ -4,12 +4,12 @@ import classes from './styles.module.css';
 
 export default function Modal({ children, onClose }: PropsWithChildren & {onClose: () => void }) {
     return (
-        <div className={classes.modal}>
-            <div className={classes.modalContent}>
-                {children}
+        <div className={ classes.modal }>
+            <div className={ classes.modalContent }>
+                { children }
 
-                <div style={ {alignSelf: 'center'} }>
-                    <button className={classes.closeButton} onClick={onClose}>
+                <div style={ { alignSelf: 'center' } }>
+                    <button className={ classes.closeButton } onClick={ onClose }>
                         Close
                     </button>
                 </div>

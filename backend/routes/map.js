@@ -104,7 +104,7 @@ router.post("/getQR", async (req, res) => {
     res
       .status(200)
       .json(
-        `https://vwdwawbkaxontmxkfvwr.supabase.co/storage/v1/object/public/codes/${data[0].qrCode}`
+        `${process.env.SUPABASE_URL}/storage/v1/object/public/codes/${data[0].qrCode}`
       );
   }
 });

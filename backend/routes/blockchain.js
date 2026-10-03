@@ -6,7 +6,7 @@ const { Web3 } = require("web3");
 async function sendEth(senderPublic, senderPrivate, receiverPublic, amount) {
   const w3 = new Web3(
     new Web3.providers.HttpProvider(
-      "https://sepolia.infura.io/v3/REDACTED"
+      `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     )
   );
 
@@ -100,7 +100,7 @@ router.post("/scan/:userId/:pinId", async (req, res) => {
 async function getBalance(senderPublic) {
   const w3 = new Web3(
     new Web3.providers.HttpProvider(
-      "https://sepolia.infura.io/v3/REDACTED"
+      `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     )
   );
 

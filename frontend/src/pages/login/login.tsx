@@ -86,9 +86,9 @@ export default function Login() {
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2
                         className="mt-10 text-center text-3xl/9 font-bold tracking-tight text-gray-900"
-                        style={{ fontFamily: 'var(--font-family)' }}
+                        style={ { fontFamily: 'var(--font-family)' } }
                     >
-                        {loggingIn ? 'Sign in to' : 'Create'} your account
+                        { loggingIn ? 'Sign in to' : 'Create' } your account
                     </h2>
                 </div>
 
@@ -97,14 +97,14 @@ export default function Login() {
                         action="#"
                         method="POST"
                         className="space-y-6"
-                        onSubmit={(e) => {
+                        onSubmit={ (e) => {
                             e.preventDefault();
 
                             if (loggingIn) login();
                             else register();
-                        }}
+                        } }
                     >
-                        {!loggingIn && (
+                        { !loggingIn && (
                             <>
                                 <div>
                                     <label
@@ -122,7 +122,7 @@ export default function Login() {
                                             required
                                             autoComplete="name"
                                             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
-                                            ref={firstName}
+                                            ref={ firstName }
                                         />
                                     </div>
                                 </div>
@@ -143,7 +143,7 @@ export default function Login() {
                                             required
                                             autoComplete="name"
                                             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
-                                            ref={lastName}
+                                            ref={ lastName }
                                         />
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@ export default function Login() {
                                             required
                                             autoComplete="name"
                                             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
-                                            ref={publicKey}
+                                            ref={ publicKey }
                                         />
                                     </div>
                                 </div>
@@ -185,12 +185,12 @@ export default function Login() {
                                             required
                                             autoComplete="name"
                                             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
-                                            ref={privateKey}
+                                            ref={ privateKey }
                                         />
                                     </div>
                                 </div>
                             </>
-                        )}
+                        ) }
 
                         <div>
                             <label
@@ -208,7 +208,7 @@ export default function Login() {
                                     required
                                     autoComplete="email"
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
-                                    ref={email}
+                                    ref={ email }
                                 />
                             </div>
                         </div>
@@ -222,7 +222,7 @@ export default function Login() {
                                     Password
                                 </label>
 
-                                {loggingIn && (
+                                { loggingIn && (
                                     <div className="text-sm">
                                         <a
                                             href="#"
@@ -231,7 +231,7 @@ export default function Login() {
                                             Forgot password?
                                         </a>
                                     </div>
-                                )}
+                                ) }
                             </div>
 
                             <div className="mt-2">
@@ -242,7 +242,7 @@ export default function Login() {
                                     required
                                     autoComplete="current-password"
                                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-black-900 sm:text-sm/6"
-                                    ref={password}
+                                    ref={ password }
                                 />
                             </div>
                         </div>
@@ -252,17 +252,17 @@ export default function Login() {
                                 type="submit"
                                 className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs cursor-pointer transition hover:bg-black/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                {loggingIn ? 'Login' : 'Create Account'}
+                                { loggingIn ? 'Login' : 'Create Account' }
                             </button>
                         </div>
                     </form>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Not a member?{' '}
+                        Not a member?{ ' ' }
                         <a
                             href="#"
                             className="font-semibold text-gray-500 transition hover:text-black"
-                            onClick={() => setLoggingIn(false)}
+                            onClick={ () => setLoggingIn(false) }
                         >
                             Create an Account
                         </a>
