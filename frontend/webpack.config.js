@@ -1,5 +1,13 @@
+var fs = require('fs');
 var path = require('path');
+var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+
+// Load frontend/.env into process.env if present (copy .env.example to start).
+var envFile = path.join(__dirname, '.env');
+if (fs.existsSync(envFile)) {
+    process.loadEnvFile(envFile);
+}
 
 module.exports = {
     output: {
@@ -39,6 +47,9 @@ module.exports = {
         ],
     },
     plugins: [
+        new webpack.EnvironmentPlugin({
+            GOOGLE_MAPS_API_KEY: '',
+        }),
         new HtmlWebpackPlugin({
             template: './public/index.html',
         }),

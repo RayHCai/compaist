@@ -13,7 +13,7 @@ import Modal from '@/components/modal';
 import { distanceBetweenPoints } from '@googlemaps/markerclusterer';
 import { useNavigate, useSearchParams } from 'react-router';
 
-import { BACKEND_URL } from '@/settings';
+import { BACKEND_URL, GOOGLE_MAPS_API_KEY } from '@/settings';
 import { UserContext } from '@/contexts/userContext';
 
 import classes from './styles.module.css';
@@ -150,7 +150,7 @@ export default function MapContainer() {
 
             <div style={ { height: '100vh', width: '100%' } }>
                 <APIProvider
-                    apiKey="REDACTED"
+                    apiKey={ GOOGLE_MAPS_API_KEY }
                     onLoad={ () => console.log('Maps API has loaded.') }
                 >
                     <Map
